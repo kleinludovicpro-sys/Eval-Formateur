@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Évaluation de la Formation Incendie</title>
+
+<style>
+:root {
+  --primary: #1976d2;
+  --primary-bg: #e3f2fd;
+  --text-main: #1f2937;
+  --bg-card: #ffffff;
+  --smile-hover: #f3f4f6;
+  --smile-selected: #e0f2f1;
+  --border-color: #e5e7eb;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #0f1115;
+  color: var(--text-main);
+  line-height: 1.5;
+}
+.bg {
+  position: fixed;
+  inset: 0;
+  background: url("regiolis.jpg") center/cover no-repeat;
+  z-index: -3;
+}
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15,17,21,0.85), rgba(15,17,21,0.70));
+  z-index: -2;
+}
+.container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+.card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  animation: fadeIn 0.4s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+h1 {
+  color: #fff;
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 30px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+h2 { margin-top: 0; color: var(--text-main); font-size: 1.5rem; }
+
+/* Formulaire */
+label.form-label {
+  font-weight: 600;
+  display: block;
+  margin-top: 15px;
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+input[type="text"], input[type="date"], select, textarea {
+  width: 100%;
+  padding: 12px 15px;
+  margin-top: 6px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-bg);
+}
+
+/* Boutons */
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 25px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #fff;
+  background: var(--primary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+button:hover:not(:disabled) { background: #1565c0; }
+button:active:not(:disabled) { transform: scale(0.98); }
+button:disabled { background: #9ca3af; cursor: not-allowed; }
+
+/* Barre de progression */
+.progress-container {
+  background: var(--border-color);
+  height: 8px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.progress-bar {
+  background: var(--primary);
+  height: 100%;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+/* En-tête des questions */
+.q-header {
+  display: flex;
+  justify-content: space-between;
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.question-text {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #111827;
+  text-align: center;
+}
+
+/* Échelle de Smileys */
+.smileys-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+.smiley-label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 5px;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #f9fafb;
+}
+.smiley-label:hover {
+  background: var(--smile-hover);
+  border-color: #d1d5db;
+  transform: translateY(-2px);
+}
+.smiley-emoji {
+  font-size: 2.8rem;
+  margin-bottom: 8px;
+  transition: transform 0.2s;
+}
+.smiley-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #4b5563;
+  text-align: center;
+  line-height: 1.2;
+}
+.smiley-label:has(input:checked) {
+  border-color: var(--primary);
+  background: var(--primary-bg);
+}
+.smiley-label:has(input:checked) .smiley-emoji {
+  transform: scale(1.15);
+}
+.smiley-label input[type="radio"] { display: none; }
+
+/* Utilitaires */
+.danger { color: #d32f2f; font-weight: 600; margin-top: 15px; font-size: 0.9rem; text-align: center;}
+.thank-you-icon { font-size: 4rem; text-align: center; margin-bottom: 10px; display: block; }
+</style>
+</head>
+
+<body>
+<div class="bg"></div>
+<div class="overlay"></div>
+
+<div class="container">
+<h1>Évaluation de la Formation</h1>
+
+<div id="startCard" class="card">
+  <h2>Votre avis compte !</h2>
+  <p style="color: #6b7280; font-size: 0.95rem; margin-bottom: 25px;">
+    Merci de prendre 2 minutes pour évaluer cette session. Vos retours nous permettent d'améliorer continuellement nos formations.
+  </p>
+
+  <label class="form-label">Date de la session *</label>
+  <input type="date" id="dateSession">
+
+  <label class="form-label">Service (optionnel)</label>
+  <select id="service">
+    <option value="">— Non précisé —</option>
+    <option>Escale</option>
+    <option>ASCT</option>
+    <option>Vente / Accueil</option>
+    <option>Sûreté</option>
+    <option>Maintenance / Technique</option>
+    <option>Gares & Connexions</option>
+  </select>
+
+  <label class="form-label">Nom (optionnel)</label>
+  <input type="text" id="nom" placeholder="Pour une évaluation anonyme, laissez vide">
+  
+  <label class="form-label">Prénom (optionnel)</label>
+  <input type="text" id="prenom" placeholder="">
+
+  <div id="startError" class="danger" style="display:none">
+    ⚠️ La date de la session est obligatoire.
+  </div>
+
+  <button id="startBtn">Démarrer l'évaluation</button>
+</div>
+
+<div id="quizCard" class="card" style="display:none">
+  <div class="q-header">
+    <span id="themeTitle">Thème</span>
+    <span><span id="qIndex"></span> / 12</span>
+  </div>
+  <div class="progress-container">
+    <div id="progressBar" class="progress-bar"></div>
+  </div>
+  
+  <div id="question" class="question-text"></div>
+  
+  <div id="options" class="smileys-container">
+    </div>
+</div>
+
+<div id="openCard" class="card" style="display:none">
+  <div class="q-header"><span>Étape finale</span></div>
+  <div class="progress-container"><div class="progress-bar" style="width: 100%;"></div></div>
+  
+  <h2 style="text-align:center; margin-bottom: 20px;">Avez-vous d'autres remarques ?</h2>
+  
+  <label class="form-label">Ce que vous avez le plus apprécié (Points forts) :</label>
+  <textarea id="pointsForts" rows="3" placeholder="L'animation, les exercices pratiques..."></textarea>
+  
+  <label class="form-label">Ce que nous pourrions améliorer :</label>
+  <textarea id="ameliorations" rows="3" placeholder="Support visuel, rythme, durée..."></textarea>
+  
+  <button id="sendBtn">Valider mon évaluation</button>
+  <p id="sendInfo" style="text-align:center; margin-top:15px; font-weight:600; color: var(--primary);"></p>
+</div>
+
+<div id="merciCard" class="card" style="display:none; text-align: center;">
+  <span class="thank-you-icon">🙏</span>
+  <h2>Merci pour votre retour !</h2>
+  <p style="color: #4b5563; font-size: 1.1rem; margin-top: 15px;">
+    Votre évaluation a bien été enregistrée. Bonne journée et à bientôt !
+  </p>
+</div>
+
+</div>
+
+<script>
+/* CONFIGURATION (Placeholder pour le futur Apps Script) */
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnIc3nGHbYNqNCoJgMqbYMebntIZlfkLSmAlO-d15JgBZA-mC3CKh0Wdmm5z81hFkg/exec";
+
+/* STRUCTURE DU SONDAGE */
+const SMILEYS = [
+  { val: "4", emoji: "🤩", text: "Très<br>satisfait" },
+  { val: "3", emoji: "🙂", text: "Plutôt<br>satisfait" },
+  { val: "2", emoji: "😕", text: "Peu<br>satisfait" },
+  { val: "1", emoji: "🙁", text: "Pas du tout<br>satisfait" }
+];
+
+const QUESTIONS = [
+  // 1. Logistique & Environnement
+  { t: "Logistique & Salle", q: "L'organisation matérielle de la formation (confort, espace disponible)." },
+  { t: "Logistique & Salle", q: "La qualité du matériel technique mis à disposition (écran, centrale SSI)." },
+  { t: "Logistique & Salle", q: "Le respect des horaires et le rythme de la session." },
+  // 2. Moyens pédagogiques
+  { t: "Moyens Pédagogiques", q: "La clarté et la qualité visuelle du support de présentation." },
+  { t: "Moyens Pédagogiques", q: "L'utilité des documents remis (Pas à pas, fiches réflexes)." },
+  { t: "Moyens Pédagogiques", q: "La pertinence des exercices pratiques par rapport à la théorie." },
+  // 3. Animation
+  { t: "Le Formateur", q: "La clarté des explications et la vulgarisation des termes techniques." },
+  { t: "Le Formateur", q: "Le dynamisme et la capacité à maintenir l'attention du groupe." },
+  { t: "Le Formateur", q: "L'écoute et la disponibilité pour répondre à vos questions." },
+  // 4. Bilan
+  { t: "Bilan Global", q: "L'adéquation de la formation avec la réalité de votre métier/gare." },
+  { t: "Bilan Global", q: "L'atteinte de vos objectifs personnels en venant aujourd'hui." },
+  { t: "Bilan Global", q: "Vous sentez-vous aujourd'hui capable d'appliquer la procédure sereinement ?" }
+];
+
+let idx = 0, answers = [];
+const $ = id => document.getElementById(id);
+
+/* DEMARRAGE */
+$("startBtn").onclick = () => {
+  if (!$("dateSession").value) {
+    $("startError").style.display = "block";
+    return;
+  }
+  $("startError").style.display = "none";
+  $("startCard").style.display = "none";
+  $("quizCard").style.display = "block";
+  render();
+};
+
+/* AFFICHAGE DES QUESTIONS */
+function render() {
+  $("themeTitle").textContent = QUESTIONS[idx].t;
+  $("qIndex").textContent = idx + 1;
+  const progressPercent = (idx / QUESTIONS.length) * 100;
+  $("progressBar").style.width = progressPercent + "%";
+  
+  $("question").textContent = QUESTIONS[idx].q;
+  $("options").innerHTML = "";
+  
+  SMILEYS.forEach((s) => {
+    const l = document.createElement("label");
+    l.className = "smiley-label";
+    l.innerHTML = `
+      <input type="radio" name="eval" value="${s.val}">
+      <span class="smiley-emoji">${s.emoji}</span>
+      <span class="smiley-text">${s.text}</span>
+    `;
+    $("options").appendChild(l);
+  });
+  
+  // Passage auto à la question suivante lors d'un clic
+  const radios = document.getElementsByName("eval");
+  radios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      answers.push(radio.value);
+      
+      // Léger délai pour voir l'animation du smiley sélectionné
+      setTimeout(() => {
+        idx++;
+        if (idx === QUESTIONS.length) {
+          $("quizCard").style.display = "none";
+          $("openCard").style.display = "block";
+        } else {
+          $("quizCard").style.animation = 'none';
+          $("quizCard").offsetHeight; 
+          $("quizCard").style.animation = 'fadeIn 0.3s ease-out';
+          render();
+        }
+      }, 350); // 350ms de pause
+    });
+  });
+}
+
+/* ENVOI DES DONNEES */
+$("sendBtn").onclick = async () => {
+  const payload = {
+    date: $("dateSession").value,
+    service: $("service").value || "Non précisé",
+    nom: $("nom").value || "Anonyme",
+    prenom: $("prenom").value || "",
+    notes_1_a_12: answers, // Tableau contenant les notes de 4 à 1
+    pointsForts: $("pointsForts").value,
+    ameliorations: $("ameliorations").value,
+    userAgent: navigator.userAgent
+  };
+
+  $("sendBtn").disabled = true;
+  $("sendInfo").textContent = "Envoi de votre évaluation...";
+
+  try {
+    // Le fetch est prêt pour quand tu auras le script Google
+    /*
+    await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify(payload),
+      mode: "no-cors"
+    });
+    */
+    // Simulation d'envoi pour l'instant
+    setTimeout(() => { showMerci(); }, 800);
+  } catch (e) {
+    console.error("Erreur d'envoi:", e);
+    showMerci(); // On affiche quand même la page de fin
+  }
+};
+
+function showMerci() {
+  $("openCard").style.display = "none";
+  $("merciCard").style.display = "block";
+}
+</script>
+</body>
+</html>
