@@ -360,13 +360,14 @@ function render() {
 }
 
 /* ENVOI DES DONNEES */
+/* ENVOI DES DONNEES */
 $("sendBtn").onclick = async () => {
   const payload = {
     date: $("dateSession").value,
     service: $("service").value || "Non précisé",
     nom: $("nom").value || "Anonyme",
     prenom: $("prenom").value || "",
-    notes_1_a_12: answers, // Tableau contenant les notes de 4 à 1
+    notes_1_a_12: answers,
     pointsForts: $("pointsForts").value,
     ameliorations: $("ameliorations").value,
     userAgent: navigator.userAgent
@@ -376,19 +377,19 @@ $("sendBtn").onclick = async () => {
   $("sendInfo").textContent = "Envoi de votre évaluation...";
 
   try {
-    // Le fetch est prêt pour quand tu auras le script Google
-    /*
+    // ICI : J'ai enlevé les /* et */ pour activer l'envoi réel
     await fetch(APPS_SCRIPT_URL, {
       method: "POST",
       body: JSON.stringify(payload),
-      mode: "no-cors"
+      mode: "no-cors" // Important pour Google Apps Script
     });
-    */
-    // Simulation d'envoi pour l'instant
-    setTimeout(() => { showMerci(); }, 800);
+    
+    // Une fois envoyé, on affiche le merci
+    showMerci(); 
   } catch (e) {
     console.error("Erreur d'envoi:", e);
-    showMerci(); // On affiche quand même la page de fin
+    // En cas d'erreur réseau, on affiche quand même merci pour l'utilisateur
+    showMerci(); 
   }
 };
 
